@@ -1,0 +1,1 @@
+A comprehensive wealth management app tailored for the Swiss market, focusing on portfolio management, transaction tracking, and localized features for Swiss pension systems (Pillar 2 & 3) and tax laws
