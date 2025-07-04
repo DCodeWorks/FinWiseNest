@@ -25,7 +25,7 @@ The application is built on a modern, scalable, and event-driven microservices a
 
 1.  **Authentication:** The end user interacts with the **Next.js/React** frontend. Authentication is handled securely by **Azure AD B2C**, which provides a bearer token upon successful login.
 2.  **API Gateway:** All authenticated API calls from the frontend are routed through **Azure API Management**. This centralized gateway directs requests to the appropriate backend microservice.
-3.  **Backend Microservices:** The core business logic is encapsulated in several **.NET 9** microservices, all running as containers on **Azure Kubernetes Service (AKS)**.
+3.  **Backend Microservices:** The core business logic is encapsulated in several **.NET 8** microservices, all running as containers on **Azure Kubernetes Service (AKS)**.
 4.  **Data & Caching:**
       * When the `Portfolio Service` needs data, it first checks for "hot" data in **Azure Cache for Redis** for low-latency responses.
       * On a cache miss, it reads from the primary **Azure SQL DB**. The cache is then primed with the new data.
@@ -46,7 +46,7 @@ The application is built on a modern, scalable, and event-driven microservices a
 
 ### Prerequisites
 
-  * [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+  * [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
   * [Node.js](https://nodejs.org/) (v18 or later)
   * [Docker Desktop](https://www.docker.com/products/docker-desktop)
   * An Azure subscription and the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
