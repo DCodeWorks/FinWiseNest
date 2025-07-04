@@ -20,6 +20,8 @@ Investors in Switzerland navigate a unique and complex financial landscape. From
 ## 🏛️ System Architecture
 
 The application is built on a modern, scalable, and event-driven microservices architecture hosted entirely on Microsoft Azure. This design ensures high availability, resilience, and separation of concerns.
+**Architecture diagram** of the complete application below (please keep in mind this is still evolving as the project is under development)
+![System Architecture Diagram](./assets/FinWiseNest_Architecture1.png)
 
 ### Architectural Flow:
 
