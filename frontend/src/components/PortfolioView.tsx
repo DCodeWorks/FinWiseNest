@@ -1,6 +1,6 @@
 import React from "react";
 import { Holding } from "@/app/lib/portfolio/types";
-
+import { AddTransactionModal } from "./AddTransactionModal";
 interface PortfolioViewProp {
   holdings: Holding[];
   portfolioValue: number;
@@ -77,9 +77,7 @@ export const PortfolioView = ({
           <h2 className=" text-xl font-bold text-gray-800">
             Investment Holdings
           </h2>
-          <button className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors ">
-            + Add Transaction
-          </button>
+          <AddTransactionModal />
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
