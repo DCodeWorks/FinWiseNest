@@ -1,5 +1,6 @@
 ﻿using FinWiseNest.Data;
 using FinWiseNest.Data.Entities;
+using FinWiseNest.Data.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using TransactionService.Models;
 
@@ -10,9 +11,12 @@ namespace TransactionService.Controllers
     public class TransactionsController:ControllerBase
     {
         private readonly AppDbContext _context;
-        public TransactionsController(AppDbContext context)
+        private readonly IMessageService _messageService;
+        public TransactionsController(AppDbContext context, 
+            IMessageService messageService)
         {
             _context = context;
+            _messageService = messageService;
         }
 
         [HttpPost]
@@ -38,6 +42,17 @@ namespace TransactionService.Controllers
 
             // TODO: publish a 'TransactionCreated' event 
             // to the Azure Service Bus here.
+            var eventMessage = new TransactionCreatedEvent
+            {
+                Id = transaction.Id,
+                Ticker = transaction.Ticker,
+                Type = transaction.Type,
+                Quantity = transaction.Quantity,
+                PricePerShare = transaction.PricePerShare,
+                TransactionDate = transaction.TransactionDate
+            };
+
+            await _messageService.PublishMessageAsync("transaction-events",eventMessage);
 
             return CreatedAtAction(nameof(CreateTransaction), new { id = transaction.Id }, transaction);
         }

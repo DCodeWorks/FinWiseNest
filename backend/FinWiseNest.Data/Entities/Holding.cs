@@ -17,5 +17,6 @@ namespace FinWiseNest.Data.Entities
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalGain { get; set; }
         public double TotalGainPercent { get; set; }
+        public int Quantity { get; set; }
     }
 }
