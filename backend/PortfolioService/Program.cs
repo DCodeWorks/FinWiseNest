@@ -1,10 +1,13 @@
 using FinWiseNest.Data;
 using FinWiseNest.Data.Messaging;
 using Microsoft.EntityFrameworkCore;
+using PortfolioService.Hubs;
 using PortfolioService.Messaging;
 using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSignalR();
 
 if (builder.Environment.IsDevelopment())
 {
@@ -29,6 +32,7 @@ if (builder.Environment.IsDevelopment())
 }
 
 
+
 const string devCorsPolicy = "devCorsPolicy";
 
 builder.Services.AddCors(options =>
@@ -37,7 +41,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:3000")
         .AllowAnyHeader()
-        .AllowAnyMethod();
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
 });
 
@@ -64,5 +69,7 @@ app.UseCors(devCorsPolicy);
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<PortfolioHub>("/portfolioHub");
 
 app.Run();

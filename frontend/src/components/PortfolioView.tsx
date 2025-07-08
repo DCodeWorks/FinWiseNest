@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import { Holding } from "@/app/lib/portfolio/types";
 import { AddTransactionModal } from "./AddTransactionModal";
+import usePortfolioUpdates from "@/hooks/usePortfolioUpdates";
 interface PortfolioViewProp {
   holdings: Holding[];
   portfolioValue: number;
@@ -45,6 +48,7 @@ export const PortfolioView = ({
   holdings,
   portfolioValue,
 }: PortfolioViewProp) => {
+  usePortfolioUpdates();
   return (
     <div className="p-6 bg-gray-50 min-h-screen font-sans">
       <header className=" mb-8">

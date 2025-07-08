@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@microsoft/signalr": "^8.0.7",
     "@radix-ui/react-dialog": "^1.1.14",
     "next": "14.2.30",
     "react": "^18",

@@ -1,6 +1,8 @@
 ﻿using FinWiseNest.Data;
 using FinWiseNest.Data.Entities;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using PortfolioService.Hubs;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -15,15 +17,18 @@ public class RabbitMQConsumer : BackgroundService
     private IConnection? _connection;
     private IChannel? _channel;
     private const string TopicName = "transaction-events";
+    private readonly IHubContext<PortfolioHub> _hubContext;
 
     public RabbitMQConsumer(
         IConfiguration configuration,
         IServiceProvider serviceProvider,
-        ILogger<RabbitMQConsumer> logger,IConnection connection)
+        ILogger<RabbitMQConsumer> logger,IConnection connection,
+        IHubContext<PortfolioHub> hubContext)
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
         _connection = connection;
+        _hubContext = hubContext;
     }
 
     public override async Task StartAsync(CancellationToken cancellationToken)
@@ -207,6 +212,9 @@ public class RabbitMQConsumer : BackgroundService
 
             await context.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("Portfolio updated for Ticker: {Ticker}", transactionEvent.Ticker);
+
+            await _hubContext.Clients.All.SendAsync("PortfolioUpdated", transactionEvent.Ticker);
+            _logger.LogInformation($"--> Sent SignalR notification for Ticker: {transactionEvent.Ticker}");
         }
         catch (Exception ex)
         {
