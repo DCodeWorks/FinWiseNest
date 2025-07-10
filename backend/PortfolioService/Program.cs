@@ -6,7 +6,7 @@ using PortfolioService.Messaging;
 using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddHttpClient();
 builder.Services.AddSignalR();
 
 if (builder.Environment.IsDevelopment())

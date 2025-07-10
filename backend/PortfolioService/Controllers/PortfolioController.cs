@@ -3,6 +3,7 @@ using FinWiseNest.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortfolioService.Models;
+using System.Text.Json;
 
 namespace PortfolioService.Controllers
 {
@@ -11,33 +12,52 @@ namespace PortfolioService.Controllers
     public class PortfolioController : ControllerBase
     {
         private readonly AppDbContext _portfolioDbContext;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public PortfolioController(AppDbContext dbContext)
+        public PortfolioController(AppDbContext dbContext, IHttpClientFactory httpClientFactory)
         {
             _portfolioDbContext = dbContext;
+            _httpClientFactory = httpClientFactory;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HoldingDto>>> GetHoldings() {
             var holdings = await _portfolioDbContext.Holdings
-                .Select(h => new HoldingDto 
-                {
-                    Ticker = h.Ticker,
-                    Name = h.Name,
-                    MarketValue = h.MarketValue,
-                    DayGain = h.DayGain,
-                    DayGainPercent = (decimal)h.DayGainPercent,
-                    TotalGain = h.TotalGain,
-                    TotalGainPercent = (decimal)h.TotalGainPercent
-                })
                 .ToListAsync();
 
             if (!holdings.Any())
             {
-                return Ok(await SeedAndGetHoldings());
+                await SeedAndGetHoldings();
             }
 
-            return Ok(holdings);
+            var holdingsDto = new List<HoldingDto>();
+
+            var client = _httpClientFactory.CreateClient();
+
+            foreach (var holding in holdings)
+            {
+                decimal currentPrice = 0;
+                var response = await client.GetAsync($"http://localhost:5002/api/marketdata/price/{holding.Ticker}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadFromJsonAsync<JsonElement>();
+                    currentPrice = content.GetProperty("price").GetDecimal();
+                }
+                holdingsDto.Add(new HoldingDto {
+                    Ticker = holding.Ticker,
+                    Name = holding.Name,
+                    Quantity = holding.Quantity,
+                    MarketValue = holding.Quantity * currentPrice,
+                    DayGain = 0, 
+                    TotalGain = 0,
+                });
+            }
+
+
+            
+
+            return Ok(holdingsDto);
         }
 
         private async Task<IEnumerable<HoldingDto>> SeedAndGetHoldings()
