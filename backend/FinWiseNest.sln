@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinWiseNest.Data", "FinWise
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketDataService", "MarketDataService\MarketDataService.csproj", "{3117E91C-EAA4-4AAA-822D-159B2CCB76D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwissHubService", "SwissHubService\SwissHubService.csproj", "{46AD2707-6AFD-498E-B1D5-F7880AA86438}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3117E91C-EAA4-4AAA-822D-159B2CCB76D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3117E91C-EAA4-4AAA-822D-159B2CCB76D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3117E91C-EAA4-4AAA-822D-159B2CCB76D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46AD2707-6AFD-498E-B1D5-F7880AA86438}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46AD2707-6AFD-498E-B1D5-F7880AA86438}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46AD2707-6AFD-498E-B1D5-F7880AA86438}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46AD2707-6AFD-498E-B1D5-F7880AA86438}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,6 @@
+@SwissHubService_HostAddress = http://localhost:5017
+
+GET {{SwissHubService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

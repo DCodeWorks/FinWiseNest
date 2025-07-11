@@ -1,3 +1,4 @@
+import { Pillar2Calculator } from "@/components/Pillar2Calculator";
 import { Pillar3aCalculator } from "@/components/Pillar3aCalculator";
 
 export default function SwissHubPage() {
@@ -12,6 +13,7 @@ export default function SwissHubPage() {
 
       <main>
         <Pillar3aCalculator />
+        <Pillar2Calculator />
       </main>
     </div>
   );
