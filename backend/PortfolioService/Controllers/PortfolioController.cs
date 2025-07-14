@@ -60,6 +60,35 @@ namespace PortfolioService.Controllers
             return Ok(holdingsDto);
         }
 
+        [HttpGet("dashboard-summary")]
+        public async Task<ActionResult<DashboardSummaryDto>> GetDashboardSummary()
+        {
+            var holdings = await _portfolioDbContext.Holdings.ToListAsync();
+
+            if (!holdings.Any())
+            {
+                return Ok(new DashboardSummaryDto());
+            }
+
+            var totalValue = holdings.Sum(h => h.MarketValue);
+            var dayChange = holdings.Sum(h => h.DayGain);
+            var previousDayValue = totalValue - dayChange;
+
+            var summary = new DashboardSummaryDto
+            {
+                TotalPortfolioValue = totalValue,
+                DayChange = dayChange,
+                DayChangePercent = previousDayValue != 0 ? (double)(dayChange / previousDayValue) * 100 : 0,
+                AssetAllocation = holdings.Select(h => new AssetAllocationDto
+                {
+                    Ticker = h.Ticker,
+                    Value = h.MarketValue
+                }).ToList()
+            };
+
+            return Ok(summary);
+        }
+
         private async Task<IEnumerable<HoldingDto>> SeedAndGetHoldings()
         {
             var seedData = new List<Holding>

@@ -2,6 +2,7 @@
 using FinWiseNest.Data.Entities;
 using FinWiseNest.Data.Messaging;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TransactionService.Models;
 
 namespace TransactionService.Controllers
@@ -55,6 +56,21 @@ namespace TransactionService.Controllers
             await _messageService.PublishMessageAsync("transaction-events",eventMessage);
 
             return CreatedAtAction(nameof(CreateTransaction), new { id = transaction.Id }, transaction);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions([FromQuery] int? year)
+        {
+            var query = _context.Transactions.AsQueryable();
+
+            if (year.HasValue)
+            {
+                query = query.Where(t => t.TransactionDate.Year == year.Value);
+            }
+
+            var transactions = await query.OrderByDescending(t => t.TransactionDate).ToListAsync();
+
+            return Ok(transactions);
         }
     }
 }
