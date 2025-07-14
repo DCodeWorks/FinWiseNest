@@ -89,6 +89,30 @@ namespace PortfolioService.Controllers
             return Ok(summary);
         }
 
+        [HttpGet("performance-history")]
+        public ActionResult<PortfolioHistoryDto> GetPerformanceHistory([FromQuery] string range = "1M")
+        {
+            // This is mock data generation. A real implementation would require
+            // complex calculations based on historical holdings and prices.
+            var history = new PortfolioHistoryDto();
+            var random = new Random();
+            decimal lastValue = 238000; // Start value
+
+            for (int i = 30; i >= 0; i--)
+            {
+                // Simulate slight daily changes
+                var change = (decimal)(random.NextDouble() * 2 - 1) * 1000;
+                lastValue += change;
+                history.History.Add(new DataPointDto
+                {
+                    Date = DateTime.Now.AddDays(-i).ToString("MMM dd"),
+                    Value = Math.Round(lastValue, 2)
+                });
+            }
+
+            return Ok(history);
+        }
+
         private async Task<IEnumerable<HoldingDto>> SeedAndGetHoldings()
         {
             var seedData = new List<Holding>

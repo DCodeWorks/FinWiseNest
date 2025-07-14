@@ -4,9 +4,12 @@ import React from "react";
 import { Holding } from "@/app/lib/portfolio/types";
 import { AddTransactionModal } from "./AddTransactionModal";
 import usePortfolioUpdates from "@/hooks/usePortfolioUpdates";
+import { PerformanceChart } from "./PerformanceChart";
+
 interface PortfolioViewProp {
   holdings: Holding[];
   portfolioValue: number;
+  performanceHistory: { date: string; value: number }[];
 }
 
 type TimeRangeButtonProps = {
@@ -47,6 +50,7 @@ const formatGain = (value: number, percent: number) => {
 export const PortfolioView = ({
   holdings,
   portfolioValue,
+  performanceHistory
 }: PortfolioViewProp) => {
   usePortfolioUpdates();
   return (
@@ -71,8 +75,8 @@ export const PortfolioView = ({
             <TimeRangeButton>1Y</TimeRangeButton>
           </div>
         </div>
-        <div className=" h-64 bg-gray-100 rounded-md flex items-center justify-center">
-          <p className=" text-gray-400">--Chart will be integrated here--</p>
+        <div className="mt-4">
+          <PerformanceChart data={performanceHistory} />
         </div>
       </div>
 
