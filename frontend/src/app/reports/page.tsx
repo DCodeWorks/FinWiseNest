@@ -3,6 +3,14 @@
 
 import { useState } from "react";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL_TAX;
+
+if (!API_BASE_URL) {
+  throw new Error(
+    "NEXT_PUBLIC_API_BASE_URL_TAX is not defined in environment variables."
+  );
+}
+
 // This should match the DTO from your TaxService
 type TaxSummary = {
   year: number;
@@ -22,7 +30,7 @@ export default function ReportsPage() {
     setError("");
     setSummary(null);
     // Ensure this port matches your running TaxService
-    const apiUrl = `http://localhost:5004/api/tax/summary/${year}`;
+    const apiUrl = `${API_BASE_URL}/api/tax/summary/${year}`;
 
     try {
       const response = await fetch(apiUrl);

@@ -1,7 +1,15 @@
 import { Transaction } from "../lib/portfolio/types";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL_TRANSACTIONS;
+
+if (!API_BASE_URL) {
+  throw new Error(
+    "NEXT_PUBLIC_API_BASE_URL_TRANSACTIONS is not defined in environment variables."
+  );
+}
+
 async function getTransactions(year?: string): Promise<Transaction[]> {
-  let url = "http://localhost:5001/api/transactions"; // Ensure port is correct
+  let url = `${API_BASE_URL}/api/transactions`; // Ensure port is correct
   if (year) {
     url += `?year=${year}`;
   }

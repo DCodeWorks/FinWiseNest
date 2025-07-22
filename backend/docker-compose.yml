@@ -1,0 +1,113 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_dev
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+      - MSSQL_PID=Developer
+    volumes:
+      - mssql_data:/var/opt/mssql
+    restart: unless-stopped
+    networks:
+      - backend_network
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq_dev
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    networks:
+      - backend_network
+
+  portfolioservice:
+    build:
+      context: .
+      dockerfile: PortfolioService/Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=mssql_dev;Database=FinWiseDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      - RabbitMQ__ConnectionString=amqp://user:password@rabbitmq_dev
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MarketDataService:BaseUrl=http://marketdataservice:8080
+    depends_on:
+      - rabbitmq
+      - sqlserver
+      - marketdataservice
+    restart: unless-stopped
+    networks:
+      - backend_network
+
+  transactionservice:
+     build:
+      context: .
+      dockerfile: TransactionService/Dockerfile
+     ports:
+      - "8082:8080" 
+     environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=mssql_dev;Database=FinWiseDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      - RabbitMQ__ConnectionString=amqp://user:password@rabbitmq_dev
+      - ASPNETCORE_ENVIRONMENT=Development
+     depends_on:
+      - rabbitmq
+      - sqlserver
+     restart: unless-stopped
+     networks:
+      - backend_network
+
+  marketdataservice:
+     build:
+      context: .
+      dockerfile: MarketDataService/Dockerfile
+     ports:
+      - "8083:8080" 
+     environment:
+      - ASPNETCORE_URLS=http://+:8080
+     restart: unless-stopped
+     networks:
+      - backend_network
+
+  swisshubservice:
+     build:
+      context: .
+      dockerfile: SwissHubService/Dockerfile
+     ports:
+      - "8084:8080" 
+     environment:
+      - ASPNETCORE_URLS=http://+:8080
+     restart: unless-stopped
+     networks:
+      - backend_network
+
+  taxservice:
+     build:
+      context: .
+      dockerfile: TaxService/Dockerfile
+     ports:
+      - "8085:8080" 
+     environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=mssql_dev;Database=FinWiseDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+     depends_on:
+      - sqlserver
+     restart: unless-stopped
+     networks:
+      - backend_network
+
+volumes:
+  mssql_data:
+
+networks:
+  frontend_network:
+    driver: bridge
+  backend_network:
+    driver: bridge  

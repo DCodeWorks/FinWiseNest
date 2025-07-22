@@ -3,6 +3,14 @@
 import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL_TRANSACTIONS;
+
+if (!API_BASE_URL) {
+  throw new Error(
+    "NEXT_PUBLIC_API_BASE_URL_TRANSACTIONS is not defined in environment variables."
+  );
+}
+
 export const AddTransactionModal = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [ticker, setTicker] = useState<string>("");
@@ -24,7 +32,7 @@ export const AddTransactionModal = () => {
     console.log("Sending transaction data:", transactionData);
 
     try {
-      const response = await fetch("http://localhost:5001/api/transactions", {
+      const response = await fetch(`${API_BASE_URL}/api/transactions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(transactionData),

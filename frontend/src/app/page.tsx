@@ -1,13 +1,18 @@
 // src/app/page.tsx
 import { Dashboard } from "@/components/Dashboard";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL_PORTFOLIO;
 
+if (!API_BASE_URL) {
+  throw new Error(
+    "NEXT_PUBLIC_API_BASE_URL_PORTFOLIO is not defined in environment variables."
+  );
+}
 async function getDashboardData() {
   try {
     // Ensure this port matches your running PortfolioService
-    const res = await fetch(
-      "http://localhost:5000/api/portfolio/dashboard-summary",
-      { cache: "no-store" }
-    );
+    const res = await fetch(`${API_BASE_URL}/api/portfolio/dashboard-summary`, {
+      cache: "no-store",
+    });
     if (!res.ok) return null;
     return res.json();
   } catch (error) {

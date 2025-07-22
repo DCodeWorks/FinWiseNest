@@ -16,8 +16,8 @@ namespace PortfolioService.Controllers
 
         public PortfolioController(AppDbContext dbContext, IHttpClientFactory httpClientFactory)
         {
-            _portfolioDbContext = dbContext;
-            _httpClientFactory = httpClientFactory;
+            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _portfolioDbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         [HttpGet]
@@ -32,12 +32,13 @@ namespace PortfolioService.Controllers
 
             var holdingsDto = new List<HoldingDto>();
 
-            var client = _httpClientFactory.CreateClient();
+            //var client = _httpClientFactory.CreateClient();
 
             foreach (var holding in holdings)
             {
                 decimal currentPrice = 0;
-                var response = await client.GetAsync($"http://localhost:5002/api/marketdata/price/{holding.Ticker}");
+                var marketDataClient = _httpClientFactory.CreateClient("MarketDataApiClient");
+                var response = await marketDataClient.GetAsync($"/api/marketdata/price/{holding.Ticker}");
 
                 if (response.IsSuccessStatusCode)
                 {
